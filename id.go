@@ -49,22 +49,24 @@ func SetSalt(salt string) {
 }
 
 // ID uint64
-type ID struct {
-	Uint64 uint64
-}
+type ID uint64
 
 // Return the hashid as an obfuscated string
 func (id *ID) String() string {
-	str, err := HashID().EncodeUint64([]uint64{id.Uint64})
+	str, err := HashID().EncodeUint64([]uint64{id.Uint64()})
 	if err != nil {
 		return ""
 	}
 	return str
 }
 
+func (id ID) Uint64() uint64 {
+	return uint64(id)
+}
+
 // MarshalJSON Returns the hashid as a string fulfilling the json.Marshaller interface
 func (id ID) MarshalJSON() ([]byte, error) {
-	str, err := HashID().EncodeUint64([]uint64{id.Uint64})
+	str, err := HashID().EncodeUint64([]uint64{id.Uint64()})
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +79,7 @@ func (id *ID) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	id.Uint64 = uint64(decoded)
+	*id = ID(decoded)
 	return nil
 }
 
@@ -120,11 +122,11 @@ func (id *ID) Scan(value interface{}) (err error) {
 		return fmt.Errorf("Invalid format: can't convert %T into id.Id", value)
 	}
 
-	id.Uint64 = data
+	*id = ID(data)
 	return nil
 }
 
 // Value This is called when saving the ID to a database
 func (id ID) Value() (driver.Value, error) {
-	return id.Uint64, nil
+	return id.Uint64(), nil
 }
