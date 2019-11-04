@@ -15,9 +15,10 @@ import (
 
 var (
 	hashData = &hashid.HashIDData{
-		Alphabet:  hashid.DefaultAlphabet,
-		MinLength: 4,
-		Salt:      "",
+		Alphabet:   hashid.DefaultAlphabet,
+		MinLength:  4,
+		Salt:       "",
+		Uint64Mode: true,
 	}
 	hashID *hashid.HashID
 )
